@@ -9,7 +9,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Clone the repository
-                git 'https://github.com/abdullahzahid39/Page-Analyzer.git'
+                 git branch: 'main', url: 'https://github.com/abdullahzahid39/Page-Analyzer.git'
             }
         }
 
