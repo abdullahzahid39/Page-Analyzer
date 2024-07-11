@@ -1,17 +1,17 @@
 pipeline {
-    agent any  // Use any available agent
+    agent any
     
     tools {
-        // Specify the Git tool explicitly
-        git 'Default'
+        git 'Default' // Use Git tool
     }
     
     triggers {
-        githubPush()
+        githubPush() // Trigger on GitHub push events
     }
     
     environment {
-        DEPLOY_DIR = '/home/abdullah/test' 
+        DEPLOY_DIR = '/home/abdullah/test'
+        IMAGE_NAME = 'python-app'  // Replace with your desired Docker image name
     }
     
     stages {
@@ -23,8 +23,8 @@ pipeline {
         
         stage('Install Dependencies') {
             steps {
-                // Install Python, Poetry, and PostgreSQL
                 script {
+                    // Install Python dependencies
                     sh '''
                     pip install --upgrade pip
                     pip install -r requirements.txt
@@ -33,21 +33,25 @@ pipeline {
             }
         }
         
-        stage('Deploy') {
+        stage('Build Docker Image') {
             steps {
-                // Copy files to deployment directory
-                sh """
-                cp -r * ${DEPLOY_DIR}
-                echo 'Deployment completed.'
-                """
+                script {
+                    // Build Docker image
+                    sh "docker build -t ${IMAGE_NAME} ."
+                }
             }
         }
         
-        stage('Run Docker Container') {
+        stage('Deploy Docker Container') {
             steps {
-                // Build and run Docker container using Docker Compose
-                dir(DEPLOY_DIR) {
-                    sh 'docker-compose up -d'
+                script {
+                    // Run Docker container
+                    sh '''
+                    docker run -d --name my-app \
+                      -v ${DEPLOY_DIR}:/code \
+                      -p 8000:8000 \
+                      ${IMAGE_NAME}
+                    '''
                 }
             }
         }
