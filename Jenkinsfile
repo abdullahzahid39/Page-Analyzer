@@ -35,10 +35,20 @@ pipeline {
         
         stage('Deploy') {
             steps {
+                // Copy files to deployment directory
                 sh """
                 cp -r * ${DEPLOY_DIR}
                 echo 'Deployment completed.'
                 """
+            }
+        }
+        
+        stage('Run Docker Container') {
+            steps {
+                // Build and run Docker container using Docker Compose
+                script {
+                    sh 'docker-compose up -d'
+                }
             }
         }
     }
@@ -49,7 +59,6 @@ pipeline {
         }
         failure {
             echo 'Build or deployment failed.'
-            echo 'abdullah bnn'
         }
     }
 }
