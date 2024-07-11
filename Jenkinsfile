@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        label 'Built-In Node'
+    }
     tools {
         // Specify the Git tool explicitly
         git 'Default'
@@ -8,7 +10,7 @@ pipeline {
         githubPush()
     }
     environment {
-        DEPLOY_AGENT = 'deploy-agent' 
+       
         DEPLOY_DIR = '/home/abdullah/test' 
     }
     stages {
@@ -30,7 +32,7 @@ pipeline {
         }
         stage('Deploy') {
             agent {
-                label "${env.DEPLOY_AGENT}"
+                label "Built-In Node"
             }
             steps {
                 // Add deploy steps here
