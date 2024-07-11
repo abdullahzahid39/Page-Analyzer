@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    tools {
+        // Specify the Git tool explicitly
+        git 'Default'
+    }
     triggers {
         githubPush()
     }
@@ -10,20 +14,24 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/abdullahzahid39/Page-Analyzer.git'
+                checkout scm
             }
         }
         stage('Install Dependencies') {
             steps {
-                // Install dependencies from requirements.txt
-                sh '''
-                sudo apt-get update
-                sudo apt-get install -y python3 python3-venv python3-pip
-                python3 -m venv venv
-                source venv/bin/activate
-                pip install --upgrade pip
-                pip install -r requirements.txt
-                '''
+                // Install Python, Poetry, and PostgreSQL
+                script {
+                    
+                    sh 'sudo apt-get update -y'
+                    sh 'sudo apt-get install -y python3 python3-venv python3-pip'
+                    sh 'curl -sSL https://install.python-poetry.org | sudo python3 -'
+                    sh 'poetry --version'
+                    python3 -m venv venv
+                    source venv/bin/activate
+                    pip install --upgrade pip
+                    pip install -r requirements.txt
+                    '''
+                }
             }
         }
         stage('Deploy') {
