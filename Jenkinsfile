@@ -46,7 +46,7 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 // Build and run Docker container using Docker Compose
-                script {
+                dir(DEPLOY_DIR) {
                     sh 'docker-compose up -d'
                 }
             }
