@@ -13,12 +13,17 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/abdullahzahid39/Page-Analyzer.git'
             }
         }
-        stage('Build') {
+        stage('Install Dependencies') {
             steps {
-                // Add build steps here
-                sh 'echo "Building the project..."'
-                // Example: npm install or other build commands
-                sh 'npm install'
+                // Install dependencies from requirements.txt
+                sh '''
+                sudo apt-get update
+                sudo apt-get install -y python3 python3-venv python3-pip
+                python3 -m venv venv
+                source venv/bin/activate
+                pip install --upgrade pip
+                pip install -r requirements.txt
+                '''
             }
         }
         stage('Deploy') {
