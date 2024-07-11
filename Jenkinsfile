@@ -49,7 +49,7 @@ pipeline {
         }
         failure {
             echo 'Build or deployment failed.'
-            echo 'abdullah'
+            echo 'abdullah bnn'
         }
     }
 }
