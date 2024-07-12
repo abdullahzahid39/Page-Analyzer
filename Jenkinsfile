@@ -1,29 +1,31 @@
+
 pipeline {
-    agent any
-
+    agent any  // Use any available agent
+    
     tools {
-        git 'Default' // Use Git tool
+        // Specify the Git tool explicitly
+        git 'Default'
     }
-
+    
     triggers {
-        githubPush() // Trigger on GitHub push events
+        githubPush()  // Trigger on GitHub push events
     }
-
+    
     environment {
-        DEPLOY_DIR = '/home/abdullah/docker-test'
+        DEPLOY_DIR = '/home/abdullah/docker-test'  // Define deployment directory
     }
-
+    
     stages {
         stage('Checkout') {
             steps {
-                checkout scm
+                checkout scm  // Checkout source code from the Git repository
             }
         }
-
+        
         stage('Install Dependencies') {
             steps {
+                // Install Python dependencies from requirements.txt
                 script {
-                    // Install Python dependencies
                     sh '''
                     pip install --upgrade pip
                     pip install -r requirements.txt
@@ -31,8 +33,8 @@ pipeline {
                 }
             }
         }
-
-         stage('Deploy') {
+        
+        stage('Deploy') {
             steps {
                 // Copy files to deployment directory
                 sh """
@@ -41,9 +43,8 @@ pipeline {
                 """
             }
         }
-        
-
-
+    }  // Close stages block
+    
     post {
         success {
             echo 'Build and deployment successful.'
@@ -52,4 +53,4 @@ pipeline {
             echo 'Build or deployment failed.'
         }
     }
-}
+}  // Close pipeline block
