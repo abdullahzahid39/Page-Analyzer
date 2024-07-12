@@ -11,7 +11,6 @@ pipeline {
     
     environment {
         DEPLOY_DIR = '/home/abdullah/test'
-        IMAGE_NAME = 'python-app'  // Replace with your desired Docker image name
     }
     
     stages {
@@ -33,29 +32,26 @@ pipeline {
             }
         }
         
-        stage('Build Docker Image') {
+        stage('Build Docker Compose') {
             steps {
                 script {
-                    // Build Docker image
-                    sh "docker build -t ${IMAGE_NAME} ."
+                    // Build Docker Compose services
+                    sh "docker-compose build"
                 }
             }
         }
         
-        stage('Deploy Docker Container') {
+        stage('Deploy Docker Compose') {
             steps {
                 script {
                     // Ensure any previous container is removed
                     sh '''
-                    docker rm -f my-app || true
+                    docker-compose down || true
                     '''
                     
-                    // Run Docker container
+                    // Run Docker Compose services
                     sh '''
-                    docker run -d --name my-app \
-                      -v ${DEPLOY_DIR}:/code \
-                      -p 8000:8000 \
-                      ${IMAGE_NAME}
+                    docker-compose up -d
                     '''
                 }
             }
