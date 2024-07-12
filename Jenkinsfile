@@ -1,25 +1,25 @@
 pipeline {
     agent any
-    
+
     tools {
         git 'Default' // Use Git tool
     }
-    
+
     triggers {
         githubPush() // Trigger on GitHub push events
     }
-    
+
     environment {
-        DEPLOY_DIR = '/home/abdullah/test'
+        DEPLOY_DIR = '/home/abdullah/docker-test'
     }
-    
+
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
-        
+
         stage('Install Dependencies') {
             steps {
                 script {
@@ -31,7 +31,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Build Docker Compose') {
             steps {
                 script {
@@ -40,15 +40,13 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Deploy Docker Compose') {
             steps {
                 script {
                     // Ensure any previous container is removed
-                    sh '''
-                    docker-compose down || true
-                    '''
-                    
+                    sh "docker-compose down"
+
                     // Run Docker Compose services
                     sh '''
                     docker-compose up -d
@@ -57,7 +55,7 @@ pipeline {
             }
         }
     }
-    
+
     post {
         success {
             echo 'Build and deployment successful.'
