@@ -32,29 +32,17 @@ pipeline {
             }
         }
 
-        stage('Build Docker Compose') {
+         stage('Deploy') {
             steps {
-                script {
-                    // Build Docker Compose services
-                    sh "docker-compose build"
-                }
+                // Copy files to deployment directory
+                sh """
+                cp -r * ${DEPLOY_DIR}
+                echo 'Deployment completed.'
+                """
             }
         }
+        
 
-        stage('Deploy Docker Compose') {
-            steps {
-                script {
-                    // Ensure any previous container is removed
-                    sh "docker-compose down"
-
-                    // Run Docker Compose services
-                    sh '''
-                    docker-compose up -d
-                    '''
-                }
-            }
-        }
-    }
 
     post {
         success {
