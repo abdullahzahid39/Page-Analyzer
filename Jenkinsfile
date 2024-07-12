@@ -45,6 +45,11 @@ pipeline {
         stage('Deploy Docker Container') {
             steps {
                 script {
+                    // Ensure any previous container is removed
+                    sh '''
+                    docker rm -f my-app || true
+                    '''
+                    
                     // Run Docker container
                     sh '''
                     docker run -d --name my-app \
